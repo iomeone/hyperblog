@@ -1,6 +1,7 @@
 #include <iostream>
 #include <mysql/mysql.h>
 
+#if 0
 int main(int argc, char *argv[]) {
     //1.创建一个句柄
     MYSQL *con = mysql_init(NULL);
@@ -56,3 +57,16 @@ int main(int argc, char *argv[]) {
     mysql_close(con);
     return 0;
 }
+#endif
+
+#if 1
+#define __TEST__
+#include <iostream>
+#include "Properties.hpp"
+
+int main() {
+    Properties p("./.property");
+    p.test();
+    return 0;
+}
+#endif
