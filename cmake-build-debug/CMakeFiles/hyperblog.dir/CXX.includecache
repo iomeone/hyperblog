@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/Properties.hpp
+map
+-
+string
+-
+fstream
+-
+iostream
+-
+
+/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/main.cpp
+iostream
+-
+mysql/mysql.h
+-
+iostream
+-
+Properties.hpp
+/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/Properties.hpp
+
