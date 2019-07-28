@@ -7,4 +7,10 @@ include_directories(.)
 link_directories("/usr/lib64/mysql")
 link_libraries(mysqlclient)
 
-add_executable(hyperblog main.cpp Properties.hpp)
+link_libraries(jsoncpp)
+link_libraries(pthread)
+link_libraries(gtest)
+link_libraries(gtest_main)
+link_libraries(hiredis)
+
+add_executable(hyperblog main.cpp server/Properties.hpp test.cpp server/server.cpp testUtils.hpp)
