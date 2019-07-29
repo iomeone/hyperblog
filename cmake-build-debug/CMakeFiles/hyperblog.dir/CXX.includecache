@@ -6,20 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/main.cpp
-iostream
--
-mysql/mysql.h
--
-iostream
--
-Properties.hpp
-/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/Properties.hpp
-gtest/gtest.h
--
-server/db.hpp
-/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/db.hpp
-
 /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/Properties.hpp
 map
 -
@@ -115,6 +101,8 @@ db.hpp
 /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/db.hpp
 
 /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/test.cpp
+tuple
+-
 gtest/gtest.h
 -
 jsoncpp/json/json.h

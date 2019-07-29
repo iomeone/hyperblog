@@ -13,4 +13,4 @@ link_libraries(gtest)
 link_libraries(gtest_main)
 link_libraries(hiredis)
 
-add_executable(hyperblog main.cpp server/Properties.hpp test.cpp server/server.cpp testUtils.hpp)
+add_executable(hyperblog server/Properties.hpp test.cpp server/server.cpp testUtils.hpp)

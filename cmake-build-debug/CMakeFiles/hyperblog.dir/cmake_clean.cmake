@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/hyperblog.dir/main.cpp.o"
   "CMakeFiles/hyperblog.dir/test.cpp.o"
   "CMakeFiles/hyperblog.dir/server/server.cpp.o"
   "hyperblog.pdb"
