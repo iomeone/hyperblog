@@ -1,24 +1,25 @@
 #include <memory>
+#include <iostream>
 
 #include <cstring>
 #include <cstdio>
 
+#include  <unistd.h>
+
 #include <mysql/mysql.h>
 #include <jsoncpp/json/json.h>
+
 #include "Properties.hpp"
 
 namespace hblog {
     //初始化MySQL
     static MYSQL *MySQLInit(const std::string &file = "") {
         MYSQL *con = mysql_init(NULL);
-
-        if (!file.empty()) {
-			Properties prop(file);
-		}
-#if 0
+        Properties prop(file);
+#if 1
         if (!mysql_real_connect(con, prop["ip"].c_str(), prop["user"].c_str(),
-                                prop["password"].c_str(), prop["db"].c_str(),
-                                std::stoi(prop["port"]), NULL, 0)) {
+                                prop["passwd"].c_str(), prop["db"].c_str(),
+                                atoi((prop["port"]).c_str()), NULL, 0)) {
 #else
         if (!mysql_real_connect(con, "127.0.0.1", "qz", "915531401", "blog", 3306, NULL, 0)) {
 

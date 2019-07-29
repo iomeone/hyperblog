@@ -1,54 +1,34 @@
 #pragma once
 
-#include <map>
+#include <memory>
 #include <string>
-#include <fstream>
-#include <iostream>
+
+#include <unistd.h>
+#include <sys/stat.h>
+
+#include <jsoncpp/json/json.h>
 
 class Properties {
 public:
     Properties() = delete;
 
     Properties(const std::string &path){
-        std::fstream fs(path, std::fstream::in);
-        ParseLine(fs);
-    }
-
-    Properties(const Properties &rhs) {
-        std::map<std::string, std::string> dup(rhs._kv);
-        std::swap(this->_kv, dup);
+        int fd = open(path.c_str(), O_RDONLY);
+        struct stat st;
+        stat(path.c_str(), &st);
+        int len = st.st_size;
+        std::unique_ptr<char> buf(new char[len]);
+        read(fd, buf.get(), len);
+        Json::Reader reader;
+        reader.parse(buf.get(), buf.get() + len, map);
     }
 
     ~Properties() = default;
 
     std::string operator[](const std::string &key) {
-        return _kv[key];
-    }
-
-    bool hasProp(const std::string &key) {
-        return _kv.count(key) > 0;
-    }
-
-    void test() {
-        for (auto p : _kv) {
-            std::cout << p.first << " : " << p.second << std::endl;
-        }
+        return map[key].asString();
     }
 
 private:
-    void ParseLine(std::fstream &fs) {
-        std::string line;
-        while (std::getline(fs, line)) {
-            auto pos = line.find(':');
-            _kv.insert(
-                    std::make_pair(
-                            line.substr(0, pos),
-                            line.substr(pos+1, line.size()-pos)
-                            )
-                    );
-        }
-    }
-
-private:
-    std::map<std::string, std::string> _kv;
+    Json::Value map;
 };

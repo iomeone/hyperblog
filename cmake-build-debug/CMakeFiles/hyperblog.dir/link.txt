@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/hyperblog.dir/test.cpp.o CMakeFiles/hyperblog.dir/server/server.cpp.o  -o hyperblog  -L/usr/lib64/mysql -Wl,-rpath,/usr/lib64/mysql -lmysqlclient -ljsoncpp -lpthread -lgtest -lgtest_main -lhiredis 
+/usr/bin/c++  -g   CMakeFiles/hyperblog.dir/server/server.cpp.o  -o hyperblog  -L/usr/lib64/mysql -Wl,-rpath,/usr/lib64/mysql -lmysqlclient -ljsoncpp -lpthread -lgtest -lgtest_main -lhiredis 

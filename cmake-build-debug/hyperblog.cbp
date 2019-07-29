@@ -86,16 +86,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/Properties.hpp">
-			<Option target="hyperblog"/>
-		</Unit>
 		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/server.cpp">
-			<Option target="hyperblog"/>
-		</Unit>
-		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/test.cpp">
-			<Option target="hyperblog"/>
-		</Unit>
-		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/testUtils.hpp">
 			<Option target="hyperblog"/>
 		</Unit>
 		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/CMakeLists.txt">

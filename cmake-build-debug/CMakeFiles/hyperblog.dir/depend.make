@@ -6,8 +6,3 @@ CMakeFiles/hyperblog.dir/server/server.cpp.o: ../server/db.hpp
 CMakeFiles/hyperblog.dir/server/server.cpp.o: ../server/httplib.h
 CMakeFiles/hyperblog.dir/server/server.cpp.o: ../server/server.cpp
 
-CMakeFiles/hyperblog.dir/test.cpp.o: ../server/Properties.hpp
-CMakeFiles/hyperblog.dir/test.cpp.o: ../server/db.hpp
-CMakeFiles/hyperblog.dir/test.cpp.o: ../test.cpp
-CMakeFiles/hyperblog.dir/test.cpp.o: ../testUtils.hpp
-

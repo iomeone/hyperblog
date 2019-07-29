@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-d
 CMakeFiles/hyperblog.dir/all:
 	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/depend
 	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target hyperblog"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target hyperblog"
 .PHONY : CMakeFiles/hyperblog.dir/all
 
 # Include target in all.
@@ -76,7 +76,7 @@ all: CMakeFiles/hyperblog.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/hyperblog.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/hyperblog.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/hyperblog.dir/rule

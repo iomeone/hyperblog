@@ -9,11 +9,12 @@
 
 MYSQL *mysql = NULL;
 
-int main() {
+int main(int argc, char *argv[]) {
     using namespace httplib;
     using namespace hblog;
-    mysql = MySQLInit("./resource/.property");
-    if(mysql == NULL) {
+    mysql = MySQLInit("config.json");
+
+    if (mysql == NULL) {
         exit(1);
     }
 
@@ -337,7 +338,7 @@ int main() {
             jresp["Reason"] = "数据库查找失败";
             resp.status = 500;
             resp.set_content(fw.write(jresp), "application/json");
-            return ;
+            return;
         }
 #ifdef __LOG__
         fprintf(stdout, "获取所有tag成功\n");
