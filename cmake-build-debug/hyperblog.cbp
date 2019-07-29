@@ -86,7 +86,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/server.cpp">
+		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/test/test.cpp">
 			<Option target="hyperblog"/>
 		</Unit>
 		<Unit filename="/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/CMakeLists.txt">

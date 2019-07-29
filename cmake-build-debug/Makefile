@@ -123,32 +123,32 @@ hyperblog/fast:
 	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/build
 .PHONY : hyperblog/fast
 
-server/server.o: server/server.cpp.o
+test/test.o: test/test.cpp.o
 
-.PHONY : server/server.o
+.PHONY : test/test.o
 
 # target to build an object file
-server/server.cpp.o:
-	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/server/server.cpp.o
-.PHONY : server/server.cpp.o
+test/test.cpp.o:
+	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/test/test.cpp.o
+.PHONY : test/test.cpp.o
 
-server/server.i: server/server.cpp.i
+test/test.i: test/test.cpp.i
 
-.PHONY : server/server.i
+.PHONY : test/test.i
 
 # target to preprocess a source file
-server/server.cpp.i:
-	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/server/server.cpp.i
-.PHONY : server/server.cpp.i
+test/test.cpp.i:
+	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/test/test.cpp.i
+.PHONY : test/test.cpp.i
 
-server/server.s: server/server.cpp.s
+test/test.s: test/test.cpp.s
 
-.PHONY : server/server.s
+.PHONY : test/test.s
 
 # target to generate assembly for a file
-server/server.cpp.s:
-	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/server/server.cpp.s
-.PHONY : server/server.cpp.s
+test/test.cpp.s:
+	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/test/test.cpp.s
+.PHONY : test/test.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... hyperblog"
 	@echo "... edit_cache"
-	@echo "... server/server.o"
-	@echo "... server/server.i"
-	@echo "... server/server.s"
+	@echo "... test/test.o"
+	@echo "... test/test.i"
+	@echo "... test/test.s"
 .PHONY : help
 
 

@@ -3,6 +3,7 @@
 #include <tuple>
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <jsoncpp/json/json.h>
 
 #include "../src/server/db.hpp"
@@ -132,6 +133,24 @@ TEST(testTagDelete, True) {
         EXPECT_TRUE(tag->Delete(i + 1)) << i + 1;
     }
 }
+
+#if 0
+class BlogTableMock : public hblog::BlogTable {
+public:
+    MOCK_METHOD1(Insert, bool(const Json::Value&));
+};
+
+TEST(Mtest, insert) {
+    BlogTableMock btm;
+    EXPECT_CALL(btm, Insert(_)).WillRepeatedly(Return(true));
+}
+
+#endif
+
+
+/*
+ * ********************** mian ******
+ */
 
 #if 1
 

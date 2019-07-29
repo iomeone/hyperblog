@@ -57,38 +57,38 @@ include CMakeFiles/hyperblog.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/hyperblog.dir/flags.make
 
-CMakeFiles/hyperblog.dir/server/server.cpp.o: CMakeFiles/hyperblog.dir/flags.make
-CMakeFiles/hyperblog.dir/server/server.cpp.o: ../server/server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/hyperblog.dir/server/server.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/hyperblog.dir/server/server.cpp.o -c /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/server.cpp
+CMakeFiles/hyperblog.dir/test/test.cpp.o: CMakeFiles/hyperblog.dir/flags.make
+CMakeFiles/hyperblog.dir/test/test.cpp.o: ../test/test.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/hyperblog.dir/test/test.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/hyperblog.dir/test/test.cpp.o -c /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/test/test.cpp
 
-CMakeFiles/hyperblog.dir/server/server.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hyperblog.dir/server/server.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/server.cpp > CMakeFiles/hyperblog.dir/server/server.cpp.i
+CMakeFiles/hyperblog.dir/test/test.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hyperblog.dir/test/test.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/test/test.cpp > CMakeFiles/hyperblog.dir/test/test.cpp.i
 
-CMakeFiles/hyperblog.dir/server/server.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hyperblog.dir/server/server.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/server/server.cpp -o CMakeFiles/hyperblog.dir/server/server.cpp.s
+CMakeFiles/hyperblog.dir/test/test.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hyperblog.dir/test/test.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/qz915/Documents/Code/Git/hyperblog/test/test.cpp -o CMakeFiles/hyperblog.dir/test/test.cpp.s
 
-CMakeFiles/hyperblog.dir/server/server.cpp.o.requires:
+CMakeFiles/hyperblog.dir/test/test.cpp.o.requires:
 
-.PHONY : CMakeFiles/hyperblog.dir/server/server.cpp.o.requires
+.PHONY : CMakeFiles/hyperblog.dir/test/test.cpp.o.requires
 
-CMakeFiles/hyperblog.dir/server/server.cpp.o.provides: CMakeFiles/hyperblog.dir/server/server.cpp.o.requires
-	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/server/server.cpp.o.provides.build
-.PHONY : CMakeFiles/hyperblog.dir/server/server.cpp.o.provides
+CMakeFiles/hyperblog.dir/test/test.cpp.o.provides: CMakeFiles/hyperblog.dir/test/test.cpp.o.requires
+	$(MAKE) -f CMakeFiles/hyperblog.dir/build.make CMakeFiles/hyperblog.dir/test/test.cpp.o.provides.build
+.PHONY : CMakeFiles/hyperblog.dir/test/test.cpp.o.provides
 
-CMakeFiles/hyperblog.dir/server/server.cpp.o.provides.build: CMakeFiles/hyperblog.dir/server/server.cpp.o
+CMakeFiles/hyperblog.dir/test/test.cpp.o.provides.build: CMakeFiles/hyperblog.dir/test/test.cpp.o
 
 
 # Object files for target hyperblog
 hyperblog_OBJECTS = \
-"CMakeFiles/hyperblog.dir/server/server.cpp.o"
+"CMakeFiles/hyperblog.dir/test/test.cpp.o"
 
 # External object files for target hyperblog
 hyperblog_EXTERNAL_OBJECTS =
 
-hyperblog: CMakeFiles/hyperblog.dir/server/server.cpp.o
+hyperblog: CMakeFiles/hyperblog.dir/test/test.cpp.o
 hyperblog: CMakeFiles/hyperblog.dir/build.make
 hyperblog: CMakeFiles/hyperblog.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/c/Users/qz915/Documents/Code/Git/hyperblog/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable hyperblog"
@@ -99,7 +99,7 @@ CMakeFiles/hyperblog.dir/build: hyperblog
 
 .PHONY : CMakeFiles/hyperblog.dir/build
 
-CMakeFiles/hyperblog.dir/requires: CMakeFiles/hyperblog.dir/server/server.cpp.o.requires
+CMakeFiles/hyperblog.dir/requires: CMakeFiles/hyperblog.dir/test/test.cpp.o.requires
 
 .PHONY : CMakeFiles/hyperblog.dir/requires
 
