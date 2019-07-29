@@ -1,18 +1,22 @@
-TESTDEP=test.cpp testUtils.hpp server/db.hpp server/Properties.hpp
-TESTFLE=test.cpp
+TESTDEP=test/test.cpp test/testUtils.hpp src/server/db.hpp src/server/Properties.hpp
+TESTFLE=test/test.cpp
 
-SERVDEP=server/server.cpp server/db.hpp server/Properties.hpp server/httplib.h
-SERVFLE=server/server.cpp
+SERVDEP=src/server/server.cpp src/server/db.hpp src/server/Properties.hpp src/server/httplib.h
+SERVFLE=src/server/server.cpp
 
-SERVFLG=-std=c++11 -ljsoncpp -lmysqlclient -lpthread
+SERVFLG=-std=c++11 -ljsoncpp -lmysqlclient -lpthread -D__LOG__
 TESTFLG=-std=c++11  -lgtest -lgtest_main -lpthread -lmysqlclient -ljsoncpp
 
-service:$(SERVDEP)
-	g++ -o service $(SERVFLE) $(SERVFLG)
+.PHONY:all
+all:servd testd
 
-test:$(TESTDEP)
-	g++ -o test $(TESTFLE) $(TESTFLG)
+servd:$(SERVDEP)
+	g++ -o servd $(SERVFLE) $(SERVFLG)
+
+testd:$(TESTDEP)
+	g++ -o testd $(TESTFLE) $(TESTFLG)
 
 .PHONY:clean
 clean:
-	rm test service
+	rm testd
+	rm servd
