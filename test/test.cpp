@@ -2,6 +2,9 @@
 
 #include <tuple>
 
+#include <unistd.h>
+#include <fcntl.h>
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <jsoncpp/json/json.h>
@@ -51,7 +54,7 @@ public:
 TEST(TestBlogInsert, True) {
     std::vector<Json::Value> vec(10);
     for (int i = 0; i < 10; ++i) {
-        vec[i]["title"] = genStr(i * 3);
+        vec[i]["title"] = genStr(i * 3 + 1);
         vec[i]["tag_id"] = genTagId();
         vec[i]["create_time"] = getTime();
         vec[i]["content"] = genStr(1 + i * 55);
@@ -66,7 +69,7 @@ TEST(TestBlogInsert, True) {
  ***************************/
 TEST(testBlogSelect, True) {
     std::vector<Json::Value> blg(10);
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 3; ++i) {
         EXPECT_TRUE(tab->Select(i + 1, &blg[i])) << i;
     }
 }

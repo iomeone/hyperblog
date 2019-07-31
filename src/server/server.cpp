@@ -1,16 +1,25 @@
+#include <map>
+
 #include <signal.h>
 
 //#include <hiredis/hiredis.h>
 
 #include "httplib.h"
 #include "db.hpp"
+#include "authentication.hpp"
 
 MYSQL *mysql = NULL;
+//             user + passwd md5  user
+//                cookie      user
+std::map<std::string, std::string> userlist;
 
 int main(int argc, char *argv[]) {
     using namespace httplib;
     using namespace hblog;
-    mysql = MySQLInit("config.json");
+
+    Properties prop("config.json");
+
+    mysql = MySQLInit(prop);
 
     if (mysql == NULL) {
         exit(1);
@@ -23,10 +32,83 @@ int main(int argc, char *argv[]) {
 
     BlogTable bt(mysql);
     TagTable tt(mysql);
+    UserTable ut(mysql);
 
     Server server;
 
     /*******************************
+     * 登录成功后返回setcookie
+     * value是密码的MD5值
+     * Set-Cookie : name=value; max-age=100
+     * 用户名密码从数据库中取 加入list 计算密码md5 和发来的MD5对比
+     * 管理登录
+     *******************************/
+    server.Post("/login", [&ut](const Request &req, Response &resp) {
+        Json::Reader reader;
+        Json::Value val;
+        std::string user;
+        std::string passwd;
+
+        reader.parse(req.body, val);
+        user = val["user"].asString();
+        passwd = val["password"].asString();
+
+        std::string realpas = ut.UserPasswd(user);
+
+        //密码错误  或用户不存在
+        if (realpas.empty() || !auth(realpas, passwd)) {
+            resp.status = 401;
+            resp.set_content("{\"OK\" : false, \"Reason\" : \"用户名, 或密码错误\"}",
+                             "application/json");
+            return;
+        }
+
+        std::string cookie;
+        std::string  cok = CalCookie(user, passwd, cookie);
+        userlist.insert(std::make_pair(cookie, user));
+
+        resp.set_header("Set-Cookie", cok.c_str());
+        resp.set_content("{\"OK\" : true}", "application/json");
+        return;
+    });
+
+    /*******************************
+     * 管理注册  注册后也就登陆了
+     *******************************/
+    server.Post("/reg", [&ut](const Request &req, Response &resp) {
+        Json::Reader reader;
+        Json::Value val;
+        std::string user;
+        std::string passwd;
+
+        reader.parse(req.body, val);
+        user = val["user"].asString();
+        passwd = val["password"].asString();
+
+        //不能注册*_*
+        if (!ut.save(user, passwd)) {
+            resp.status = 1;
+            resp.set_content(R"({"OK" : false, "Reason" : "I don't know"})", "application/json");
+            return;
+        }
+
+        std::string cookie;
+        std::string cok = CalCookie(user, passwd, cookie);
+        userlist.insert(std::make_pair(cookie, user));
+
+        resp.set_header("Set-Cookie", cok.c_str());
+        resp.set_content("{\"OK\" : true}", "application/json");
+        return;
+    });
+
+    /*****************************
+     * todo:
+     * 登出
+     *****************************/
+    //server.Post("/logout", [](const Request &req, Response &resp) {});
+
+    /*******************************
+     * //只能登录的修改***
      * POST /blog
      * 新增一篇blog
      * 正确时返回 OK
@@ -42,7 +124,7 @@ int main(int argc, char *argv[]) {
         Json::Value jresp;
         Json::FastWriter fw;
         int err = reader.parse(req.body, jreq);
-        if (!err) {
+        if (!err || !isLogin(req.get_header_value("Cookie", 0))) {
 #ifdef __LOG__
             fprintf(stderr, "解析请求失败 line: %d\n", __LINE__);
 #endif
@@ -158,6 +240,7 @@ int main(int argc, char *argv[]) {
     });
 
     /*******************************
+     * //只能登录的修改***
      * PUT /blog/:blog_id
      * 修改一篇blog
      * blog的title content tag_id 不能没有
@@ -171,7 +254,7 @@ int main(int argc, char *argv[]) {
         Json::Reader reader;
 
         int err = reader.parse(req.body, jreq);
-        if (!err) {
+        if (!err  || !isLogin(req.get_header_value("Cookie", 0))) {
 #ifdef __LOG__
             fprintf(stderr, "修改失败 line: %d\n", __LINE__);
 #endif
@@ -214,6 +297,7 @@ int main(int argc, char *argv[]) {
     });
 
     /********************************
+     * //只能登录的修改***
      * DELETE /blog/:blog_id
      * 删除一篇blog
      ********************************/
@@ -223,7 +307,7 @@ int main(int argc, char *argv[]) {
         Json::Value jresp;
 
         int err = bt.Delete(bid);
-        if (!err) {
+        if (!err  || !isLogin(req.get_header_value("Cookie", 0))) {
 #ifdef __LOG__
             fprintf(stderr, "删除blog失败\n");
 #endif
@@ -242,6 +326,7 @@ int main(int argc, char *argv[]) {
     });
 
     /****************************
+     * //只能登录的修改***
      * POST /tag
      * 增加tag
      ****************************/
@@ -251,7 +336,7 @@ int main(int argc, char *argv[]) {
         Json::Value jreq;
         Json::Value jresp;
         int err = reader.parse(req.body, jreq);
-        if (!err) {
+        if (!err || !isLogin(req.get_header_value("Cookie", 0))) {
 #ifdef __LOG__
             fprintf(stderr, "增加tag错误 line: %d\n", __LINE__);
 #endif
@@ -293,6 +378,7 @@ int main(int argc, char *argv[]) {
     });
 
     /**********************************
+     * //只能登录的修改***
      * DELETE /tag/:tag_id
      * 删除tag
      **********************************/
@@ -302,7 +388,7 @@ int main(int argc, char *argv[]) {
         Json::FastWriter fw;
 
         int err = tt.Delete(tid);
-        if (!err) {
+        if (!err || !isLogin(req.get_header_value("Cookie", 0))) {
 #ifdef __LOG__
             fprintf(stderr, "删除失败\n");
 #endif
@@ -347,6 +433,6 @@ int main(int argc, char *argv[]) {
     });
 
     server.set_base_dir("./resource");
-    server.listen("0.0.0.0", 9155);
+    server.listen(prop["servip"].c_str(), std::stoi(prop["servport"]));
     return 0;
 }

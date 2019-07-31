@@ -13,8 +13,13 @@ class Properties {
 public:
     Properties() = delete;
 
-    Properties(const std::string &path){
+    Properties(const std::string &path) {
         int fd = open(path.c_str(), O_RDONLY);
+        if (fd < 0) {
+            std::cout << "不能打开配置文件" << std::endl;
+            exit(1);
+        }
+
         struct stat st;
         stat(path.c_str(), &st);
         int len = st.st_size;
