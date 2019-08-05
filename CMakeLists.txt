@@ -15,3 +15,4 @@ link_libraries(gtest_main)
 link_libraries(hiredis)
 
 add_executable(hyperblog src/server/server.cpp)
+#add_executable(hyperblog test/test.cpp)

@@ -202,7 +202,7 @@ namespace hblog {
 
             const char *str = "update blog_table set title='%s', content='%s', tag_id=%d where blog_id=%d";
             sprintf(sql.get(), str, tbuf.get(), ebuf.get(),
-                    blog["tag_id"].asInt(), blog["blog_id"].asInt());
+                    std::stoi(blog["tag_id"].asString()), blog["blog_id"].asInt());
             int err = mysql_query(con_fd, sql.get());
             if (err != 0) {
 #ifdef __LOG__
@@ -333,6 +333,7 @@ namespace hblog {
 #endif
                 return "";
             }
+            int rows = mysql_num_rows(res);
             MYSQL_ROW row = mysql_fetch_row(res);
 #ifdef __LOG__
             fprintf(stdout, "获取密码成功\n");

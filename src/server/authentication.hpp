@@ -9,7 +9,7 @@ extern std::map<std::string, std::string> userlist;
 bool isLogin(const std::string &cookie) {
     std::string cook;
     auto pos = cookie.find("name=");
-    cook = cookie.substr(pos+5);
+    cook = cookie.substr(pos+5, 32);
     return userlist.count(cook) > 0;
 }
 

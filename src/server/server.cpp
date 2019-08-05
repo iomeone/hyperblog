@@ -1,9 +1,11 @@
 #include <map>
+#include <thread>
 
 #include <signal.h>
+#include <sys/mman.h>
 
 //#include <hiredis/hiredis.h>
-
+//设计先行 需求分析
 #include "httplib.h"
 #include "db.hpp"
 #include "authentication.hpp"
@@ -57,14 +59,20 @@ int main(int argc, char *argv[]) {
 
         //密码错误  或用户不存在
         if (realpas.empty() || !auth(realpas, passwd)) {
+#ifdef __LOG__
+            fprintf(stderr, "登录失败\n");
+#endif
             resp.status = 401;
             resp.set_content("{\"OK\" : false, \"Reason\" : \"用户名, 或密码错误\"}",
                              "application/json");
             return;
         }
-
+#ifdef __LOG__
+            fprintf(stdout, "登录成功\n");
+#endif
+        resp.status = 200;
         std::string cookie;
-        std::string  cok = CalCookie(user, passwd, cookie);
+        std::string cok = CalCookie(user, passwd, cookie);
         userlist.insert(std::make_pair(cookie, user));
 
         resp.set_header("Set-Cookie", cok.c_str());
@@ -73,7 +81,7 @@ int main(int argc, char *argv[]) {
     });
 
     /*******************************
-     * 管理注册  注册后也就登陆了
+     * 管理注册  注册后也就登陆了  -to do-:  修改密码  注册
      *******************************/
     server.Post("/reg", [&ut](const Request &req, Response &resp) {
         Json::Reader reader;
@@ -116,7 +124,7 @@ int main(int argc, char *argv[]) {
      *******************************/
     server.Post("/blog", [&bt](const Request &req, Response &resp) {
 #ifdef __LOG__
-        fprintf(stdout, "增加blog\n");
+        fprintf(stdout, "权限认证失败\n");
 #endif
         //获取request的body 解析成json
         Json::Reader reader;
@@ -252,9 +260,18 @@ int main(int argc, char *argv[]) {
         Json::Value jreq;
         Json::FastWriter fw;
         Json::Reader reader;
-
+        if (!isLogin(req.get_header_value("Cookie", 0))){
+#ifdef __LOG__
+            fprintf(stdout, "权限认证失败\n");
+#endif
+            resp.status = 500;
+            jresp["OK"] = false;
+            jresp["Reason"] = "没有权限";
+            resp.set_content(fw.write(jresp), "application/json");
+            return;
+        }
         int err = reader.parse(req.body, jreq);
-        if (!err  || !isLogin(req.get_header_value("Cookie", 0))) {
+        if (!err) {
 #ifdef __LOG__
             fprintf(stderr, "修改失败 line: %d\n", __LINE__);
 #endif
@@ -306,8 +323,19 @@ int main(int argc, char *argv[]) {
         Json::FastWriter fw;
         Json::Value jresp;
 
+        if (!isLogin(req.get_header_value("Cookie", 0))){
+#ifdef __LOG__
+            fprintf(stdout, "权限认证失败\n");
+#endif
+            resp.status = 500;
+            jresp["OK"] = false;
+            jresp["Reason"] = "没有权限";
+            resp.set_content(fw.write(jresp), "application/json");
+            return;
+        }
+
         int err = bt.Delete(bid);
-        if (!err  || !isLogin(req.get_header_value("Cookie", 0))) {
+        if (!err) {
 #ifdef __LOG__
             fprintf(stderr, "删除blog失败\n");
 #endif
@@ -335,8 +363,18 @@ int main(int argc, char *argv[]) {
         Json::Reader reader;
         Json::Value jreq;
         Json::Value jresp;
+        if (!isLogin(req.get_header_value("Cookie", 0))){
+#ifdef __LOG__
+            fprintf(stdout, "权限认证失败\n");
+#endif
+            resp.status = 500;
+            jresp["OK"] = false;
+            jresp["Reason"] = "没有权限";
+            resp.set_content(fw.write(jresp), "application/json");
+            return;
+        }
         int err = reader.parse(req.body, jreq);
-        if (!err || !isLogin(req.get_header_value("Cookie", 0))) {
+        if (!err) {
 #ifdef __LOG__
             fprintf(stderr, "增加tag错误 line: %d\n", __LINE__);
 #endif
@@ -386,9 +424,18 @@ int main(int argc, char *argv[]) {
         int32_t tid = std::stoi(req.matches[1].str());
         Json::Value jresp;
         Json::FastWriter fw;
-
+        if (!isLogin(req.get_header_value("Cookie", 0))){
+#ifdef __LOG__
+            fprintf(stdout, "权限认证失败\n");
+#endif
+            resp.status = 500;
+            jresp["OK"] = false;
+            jresp["Reason"] = "没有权限";
+            resp.set_content(fw.write(jresp), "application/json");
+            return;
+        }
         int err = tt.Delete(tid);
-        if (!err || !isLogin(req.get_header_value("Cookie", 0))) {
+        if (!err) {
 #ifdef __LOG__
             fprintf(stderr, "删除失败\n");
 #endif
@@ -427,12 +474,32 @@ int main(int argc, char *argv[]) {
 #ifdef __LOG__
         fprintf(stdout, "获取所有tag成功\n");
 #endif
-        jresp["OK"] = true;
+        resp.status = 200;
         resp.set_content(fw.write(jresp), "applicaton/json");
         return;
     });
 
-    server.set_base_dir("./resource");
+    server.Get("/", [](const Request &req, Response &resp) {
+        //请求html
+        int file = open("src/resource/front/index.html", O_RDONLY);
+        if (file < 0) {  //文件打开失败
+            fprintf(stderr, "index.html 打开失败\n");
+            resp.status = 404;
+            return ;
+        }
+        struct stat st;
+        stat("src/resource/index.html", &st);
+        void *m = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, file, 0);
+        resp.set_content(static_cast<char*>(m), st.st_size, "text/html");
+        munmap(m, st.st_size);
+        return;
+    });
+	
+	server.Get("/shutdown", [](const Request &req, Response &resp) {
+		exit(1);
+	});
+
+    server.set_base_dir("src/resource/");
     server.listen(prop["servip"].c_str(), std::stoi(prop["servport"]));
     return 0;
 }

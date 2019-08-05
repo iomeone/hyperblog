@@ -23,7 +23,8 @@ public:
     virtual void SetUp() {
         srand(time(0));
         using namespace hblog;
-        con = MySQLInit("testconfig.json");
+        Properties prop("testconfig.json");
+        con = MySQLInit(prop);
         if (con == NULL) {
             std::cout << "connect db err" << std::endl;
             exit(1);
