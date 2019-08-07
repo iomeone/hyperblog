@@ -283,6 +283,75 @@ namespace httplib {
     private:
         std::string buffer;
     };
+	
+	    class Task {
+    public:
+        Task() {}
+        virtual ~Task() {}
+        virtual void run() = 0;
+    };
+
+    class RealTask : public Task{
+    public:
+        RealTask(std::function<void()> f) : fn(f) {
+
+        }
+        virtual ~RealTask() {}
+        virtual void run() {
+            fn();
+        }
+    private:
+        std::function<void()> fn;
+    };
+
+
+    class ThreadPool {
+    public:
+        ThreadPool(int n) : maxThreads(n), stop(false) {
+            while (n) {
+                auto i = std::make_shared<std::thread>(engine, this);
+                worker.push_back(i);
+                --n;
+            }
+        }
+
+        void add(Task *t) {
+            std::unique_lock<std::mutex> l(lock);
+            tasks.push_back(t);
+            cv.notify_one();
+        }
+
+        void Stop() {
+            stop = true;
+            cv.notify_all();
+            for (auto i : worker) {
+                i->join();
+            }
+        }
+
+    protected:
+        static void engine(ThreadPool *tp) {
+            for (;;) {
+                std::unique_lock<std::mutex> l(tp->lock);
+                tp->cv.wait(l, [&](){ return tp->worker.empty() || tp->stop; });
+                if (tp->tasks.empty() || tp->stop) {
+                    break;
+                }
+                auto t = tp->tasks.front();
+                tp->tasks.pop_front();
+                t->run();
+            }
+        }
+
+    private:
+        std::atomic<bool>      stop;
+        std::condition_variable cv;
+        std::mutex             lock;
+        std::deque<Task *>     tasks;
+        std::atomic<int>       current_thread;
+        std::list<std::shared_ptr<std::thread>> worker; //工作线程   后期添加动态扩容
+        int       maxThreads;
+    };
 
     class Server {
     public:
@@ -324,6 +393,8 @@ namespace httplib {
         bool listen(const char *host, int port, int socket_flags = 0);
 
         bool is_running() const;
+		
+		void add(Task *t);
 
         void stop();
 
@@ -371,6 +442,8 @@ namespace httplib {
         Handlers options_handlers_;
         Handler error_handler_;
         Logger logger_;
+		
+		ThreadPool tp;
 
         // TODO: Use thread pool...
         std::mutex running_threads_mutex_;
@@ -1811,7 +1884,7 @@ namespace httplib {
     inline Server::Server()
             : keep_alive_max_count_(CPPHTTPLIB_KEEPALIVE_MAX_COUNT),
               payload_max_length_(CPPHTTPLIB_PAYLOAD_MAX_LENGTH), is_running_(false),
-              svr_sock_(INVALID_SOCKET), running_threads_(0) {
+              svr_sock_(INVALID_SOCKET), running_threads_(0) , tp(16){
 #ifndef _WIN32
         signal(SIGPIPE, SIG_IGN);
 #endif
@@ -1890,6 +1963,10 @@ namespace httplib {
     }
 
     inline bool Server::is_running() const { return is_running_; }
+	
+	inline void Server::add(Task *t) {
+        tp.add(t);
+    }
 
     inline void Server::stop() {
         if (is_running_) {
@@ -2083,6 +2160,7 @@ namespace httplib {
 
             //这里就是 将连接上的套接字  放入一个线程  然后detach
             // TODO: Use thread pool...
+			/*
             std::thread([=]() {
                 {
                     std::lock_guard<std::mutex> guard(running_threads_mutex_);
@@ -2096,15 +2174,19 @@ namespace httplib {
                     running_threads_--;
                 }
             }).detach();
+			*/
+			tp.add(new RealTask([=](){read_and_close_socket(sock);}));
         }
 
         // 所有执行线程执行完了 才会退出监听
         // TODO: Use thread pool...
+		/*
         for (;;) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
             std::lock_guard<std::mutex> guard(running_threads_mutex_);
             if (!running_threads_) { break; }
         }
+		*/
 
         is_running_ = false;
 
