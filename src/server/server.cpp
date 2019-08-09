@@ -1,5 +1,4 @@
 #include <map>
-#include <thread>
 
 #include <signal.h>
 #include <sys/mman.h>
@@ -9,6 +8,60 @@
 #include "httplib.h"
 #include "db.hpp"
 #include "authentication.hpp"
+
+class aThreadPool : public httplib::TaskQueue {
+public:
+    aThreadPool(int n) {
+        while (n --> 0) {
+            auto i = std::make_shared<std::thread>(Worker, this);
+            pool.push_back(i);
+        }
+    }
+
+    ~aThreadPool() {}
+
+    virtual void enqueue(std::function<void()> fn) override {
+        std::unique_lock<std::mutex> l(lock);
+        task.push_back(fn);
+        cv.notify_one();
+    }
+
+    virtual void shutdown() override {
+        stop = true;
+        cv.notify_all();
+
+        for (auto i : pool) {
+            i->join();
+        }
+    }
+
+protected:
+    static void Worker(aThreadPool *t) {
+        for (;;) {
+            std::function<void()> f;
+            {
+                std::unique_lock<std::mutex> l(t->lock);
+                t->cv.wait(l, [&](){return !t->task.empty() || t->stop; });
+                if (t->stop && t->task.empty()) {
+                    break;
+                }
+                f = t->task.front();
+                t->task.pop_front();
+            }
+            if (f == nullptr) {
+                continue;
+            }
+            f();
+        }
+    }
+
+private:
+    std::list<std::shared_ptr<std::thread>> pool;
+    std::list<std::function<void()>> task;
+    std::condition_variable cv;
+    std::mutex lock;
+    std::atomic_bool stop;
+};
 
 MYSQL *mysql = NULL;
 //             user + passwd md5  user
@@ -37,6 +90,7 @@ int main(int argc, char *argv[]) {
     UserTable ut(mysql);
 
     Server server;
+    server.new_task_queue = []{ return new aThreadPool(CPPHTTPLIB_THREAD_POOL_COUNT); };
 
     /*******************************
      * 登录成功后返回setcookie
