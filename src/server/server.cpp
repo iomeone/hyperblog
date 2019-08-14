@@ -9,6 +9,8 @@
 #include "db.hpp"
 #include "authentication.hpp"
 
+
+/*
 class aThreadPool : public httplib::TaskQueue {
 public:
     aThreadPool(int n) {
@@ -62,6 +64,38 @@ private:
     std::mutex lock;
     std::atomic_bool stop;
 };
+ */
+
+struct Lst {
+    httplib::Server *s;
+    const char *ip;
+    int port;
+};
+
+void* CoListen(void *arg) {
+    Lst* l = static_cast<Lst*>(arg);
+    l->s->listen(l->ip, l->port);
+}
+
+class CoPool : public httplib::TaskQueue {
+public:
+    CoPool() {
+    }
+
+    virtual void enqueue(std::function<void()> fn) override {
+        stCoRoutine_t *c;
+        co_create(&c, NULL, work, &fn);
+        co_resume(c);
+    }
+
+    virtual void shutdown() override {
+
+    }
+protected:
+    static void* work(void *arg) {
+        (*static_cast<std::function<void()>*>(arg))();
+    }
+};
 
 MYSQL *mysql = NULL;
 //             user + passwd md5  user
@@ -90,7 +124,8 @@ int main(int argc, char *argv[]) {
     UserTable ut(mysql);
 
     Server server;
-    server.new_task_queue = []{ return new aThreadPool(CPPHTTPLIB_THREAD_POOL_COUNT); };
+    //server.new_task_queue = []{ return new aThreadPool(CPPHTTPLIB_THREAD_POOL_COUNT); };
+    server.new_task_queue = []{ return new CoPool; };
 
     /*******************************
      * 登录成功后返回setcookie
@@ -554,6 +589,17 @@ int main(int argc, char *argv[]) {
 	});
 
     server.set_base_dir("src/resource/");
-    server.listen(prop["servip"].c_str(), std::stoi(prop["servport"]));
+    Lst lst;
+    lst.ip = prop["servip"].c_str();
+    lst.port = std::stoi(prop["servport"]);
+    lst.s = &server;
+
+    stCoRoutine_t *t;
+    co_create(&t, NULL, CoListen, &lst);
+    co_resume(t);
+
+    co_eventloop(co_get_epoll_ct(), NULL, NULL);
+
     return 0;
 }
+

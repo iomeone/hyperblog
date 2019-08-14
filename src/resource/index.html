@@ -143,8 +143,7 @@ var app = new Vue({
                 url = '/blog/?tag_id=' + tag_id;
             }
             // 最核心操作, 访问 http 服务器的数据
-            // ajax 原生 API 特别难用. Vue 也提供了 API, 环境配置比较麻烦
-            // 此处我们是使用 JQuery 提供的 API 
+            // 此处使用 JQuery 提供的 API 
             $.ajax({
                 url: url,
                 type: "get",
@@ -171,8 +170,8 @@ var app = new Vue({
                 success: function(data, status) {
                     this.tags = data;
                     // 2. 从服务器上获取博客
-                    // 更建议大家把 get_blogs 写到回调内部
-                    // 因为需要先获取到 tag 信息, 然后才能获取 博客 列表, 否则 tag_id 和 tag_name 的映射关系无法正确建立. 
+                    // 因为需要先获取到 tag 信息, 
+					//然后才能获取 博客 列表, 否则 tag_id 和 tag_name 的映射关系无法正确建立. 
                     this.get_blogs();
                 }
             })
@@ -184,7 +183,7 @@ var app = new Vue({
                 type: "get",
                 context: this,
                 success: function(data, status) {
-                    // 此时得到的 blog.content 是 markdown 格式的数据
+                    // 此处得到的 blog.content 是 markdown 格式的数据
                     this.blog = data;
                     // 把这个 markdown 格式的数据转成 html, 并显示在界面上
                     testEditormdView = editormd.markdownToHTML("blog_view", {

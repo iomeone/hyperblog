@@ -92,6 +92,8 @@ inline const unsigned char *ASN1_STRING_get0_data(const ASN1_STRING *asn1) {
 #include <zlib.h>
 #endif
 
+#include <co_routine.h>
+
 /*
  * Configuration
  */
@@ -885,7 +887,9 @@ inline int close_socket(socket_t sock) {
 #endif
 }
 
+
 inline int select_read(socket_t sock, time_t sec, time_t usec) {
+  /*
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sock, &fds);
@@ -895,7 +899,15 @@ inline int select_read(socket_t sock, time_t sec, time_t usec) {
   tv.tv_usec = static_cast<long>(usec);
 
   return select(static_cast<int>(sock + 1), &fds, nullptr, nullptr, &tv);
+   */
+  co_enable_hook_sys();
+  struct pollfd pf[1] = {0};
+  pf->fd = sock;
+  pf->events = POLLIN;
+  //                                         毫秒 = 微秒/1000
+  return co_poll(co_get_epoll_ct(), pf, 1, sec*1000 + usec/1000);
 }
+
 
 inline bool wait_until_socket_is_ready(socket_t sock, time_t sec, time_t usec) {
   fd_set fdsr;

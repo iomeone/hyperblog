@@ -5,8 +5,8 @@ TESTFLE=test/test.cpp
 SERVDEP=src/server/server.cpp src/server/db.hpp src/server/Properties.hpp src/server/httplib.h src/server/md5.hpp src/server/authentication.hpp
 SERVFLE=src/server/server.cpp
 
-SERVFLG=-std=c++11 -ljsoncpp -lmysqlclient -lpthread
-TESTFLG=-std=c++11  -lgtest -lgtest_main -lpthread -lmysqlclient -ljsoncpp
+SERVFLG=-std=c++11 -ljsoncpp -lmysqlclient -lpthread  -lcolib
+TESTFLG=-std=c++11  -lgtest -lgtest_main -lpthread -lmysqlclient -ljsoncpp -lcolib
 G=-g
 
 log=-D__LOG__

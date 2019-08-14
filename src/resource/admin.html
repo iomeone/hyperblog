@@ -71,26 +71,15 @@
         <div class="blog-sidebar-widget blog-bor" v-cloak>
             <h2 class="blog-text-center blog-title"><span>About</span></h2>
             <img src="assets/i/f14.jpg" alt="about me" class="blog-entry-img" >
-            <!--插值表达式-->
-            <!--p>{{author}}</p-->
-            <p><!--------------------这里写介绍-------------------------------->
+            <p>
                 我是{{author}}
         </p><p>这是用来测试博客系统后台代码的页面  *_*</p>
         </div>
-        <!--div class="blog-sidebar-widget blog-bor">
-            <h2 class="blog-text-center blog-title"><span>Contact</span></h2>
-            <p> 
-				<a href=""><span class="am-icon-weixin am-icon-fw blog-icon"></span></a>
-                <a href=""><span class="am-icon-qq am-icon-fw am-primary blog-icon"></span></a>
-                <a href=""><span class="am-icon-github am-icon-fw blog-icon"></span></a>
-            </p>
-        </div-->
         <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
 		
             <h2 class="blog-title"><span>Tags</span></h2>
             <div class="am-u-sm-12 blog-clear-padding" v-cloak>
-			<!--button type="button" class="am-btn am-btn-danger am-round" v-on:click="get_blogs(tag.tag_id)">{{tag.tag_name}}</button-->
-            <a href="" class="blog-tag" v-for="tag in tags">{{tag.tag_name}}</a>
+			<a href="" class="blog-tag" v-for="tag in tags">{{tag.tag_name}}</a>
             </div>
         </div>
 		<button type="button" class="am-btn am-btn-danger am-round" v-on:click="login()"  >登录</button>
@@ -126,16 +115,13 @@
 
 <script>
 var app = new Vue({
-    el: '#app',  // el 表示 app 这个 Vue 对象和哪个 HTML 元素关联上. 
+    el: '#app',
     data: {
-        // data 表示所有需要在页面上动态变化的数据
-        // 把 js 中的数据和界面上的内容关联在一起, 数据绑定的过程. 
         author: '秦哲',
         blogs: [
         ],
         tags: [
         ],
-        // blog 对象用来保存当前页面上展示的博客的详细内容. 
         blog: {
             blog_id: null,
             title: null,
@@ -146,8 +132,6 @@ var app = new Vue({
     },
     methods: {
         tag_id2name(tag_id) {
-            // this 访问到当前的 app 对象
-            // this.tags 就相当于上面定义的标签数组
             for (var index in this.tags) {
                 if (this.tags[index].tag_id == tag_id) {
                     return this.tags[index].tag_name;
@@ -160,62 +144,38 @@ var app = new Vue({
             if (tag_id != null) {
                 url = '/blog/?tag_id=' + tag_id;
             }
-            // 最核心操作, 访问 http 服务器的数据
-            // ajax 原生 API 特别难用. Vue 也提供了 API, 环境配置比较麻烦
-            // 此处我们是使用 JQuery 提供的 API 
             $.ajax({
                 url: url,
                 type: "get",
-                context: this, // 此处的 this 就表示 Vue 对象
+                context: this, 
                 success: function(data, status) {
-                    // date 表示响应的 body 数据
-                    // status 表示响应的状态码
-                    // HTTP 请求执行成功之后要执行这个代码.
-                    // 在这个代码中更新数据.  
-                    // 如果不设置 context, 此时直接使用 this.blogs 是会出错的. 
-                    // 因为此时的 this 表示当前 $ 这样的 jquery 对象
-                    // 而不是 Vue 对象
-                    // 加上 context 之后, this 就表示 context 中的值
                     this.blogs = data;
                 }
             })
         },
         init() {
-            // 1. 从服务器上获取 tag
             $.ajax({
                 type: "get",
                 url: "/tag",
                 context: this,
                 success: function(data, status) {
                     this.tags = data;
-                    // 2. 从服务器上获取博客
-                    // 更建议大家把 get_blogs 写到回调内部
-                    // 因为需要先获取到 tag 信息, 然后才能获取 博客 列表, 否则 tag_id 和 tag_name 的映射关系无法正确建立. 
                     this.get_blogs();
                 }
             })
         },
-        // 点击博客标题的时候来调用这个函数
         get_blog(blog_id) {
             $.ajax({
                 url: '/blog/' + blog_id,
                 type: "get",
                 context: this,
                 success: function(data, status) {
-                    // 此时得到的 blog.content 是 markdown 格式的数据
                     this.blog = data;
-                    // 把这个 markdown 格式的数据转成 html, 并显示在界面上
                     testEditormdView = editormd.markdownToHTML("blog_view", {
-                        markdown        : this.blog.content ,//+ "\r\n" + $("#append-test").text(),
-                        //htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
-                        htmlDecode      : "style,script,iframe",  // you can filter tags decode
-                        //toc             : false,
-                        tocm            : true,    // Using [TOCM]
-                        //tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
-                        //gfm             : false,
-                        //tocDropdown     : true,
-                        // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
-                        emoji           : true,
+                        markdown        : this.blog.content ,
+                        htmlDecode      : "style,script,iframe", 
+                        tocm            : true,   
+                       emoji           : true,
                         taskList        : true,
                         tex             : true,  // 默认不解析
                         flowChart       : true,  // 默认不解析
@@ -232,13 +192,11 @@ var app = new Vue({
                 context: this,
                 success: function(data, status) {
                     this.get_blogs();
-                    // 弹出对话框提示删除成功
                     alert("删除成功");
                 }
             })
         },
         edit_blog(blog_id) {
-            // 1. 先把之前的博客数据先清空
             this.blog = {};
 			if (blog_id === -1) {
 			this.blog.content = "";
@@ -246,14 +204,12 @@ var app = new Vue({
 			this.blog.title = "";
 			return;
 			}
-            // 2. ajax 获取到当前点击的博客内容
             $.ajax({
                 type: "get",
                 url: "/blog/" + blog_id,
                 context: this,
                 success: function(data, status) {
                     this.blog = data;
-                    // 3. 根据数据加载 markdown 编辑器
                     testEditor = editormd("blog_view", {
                         width: "100%",
                         height: "700px",
@@ -267,7 +223,6 @@ var app = new Vue({
             this.blog = {};
         },
         update_blog(blog_id) {
-            // 从编辑器中获取到修改后的 markdown 数据
             var content = testEditor.getMarkdown();
             var body = {
                 title: this.blog.title,

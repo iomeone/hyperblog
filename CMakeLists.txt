@@ -13,6 +13,8 @@ link_libraries(gtest)
 #link_libraries(gmock)
 link_libraries(gtest_main)
 link_libraries(hiredis)
+link_libraries(colib)
+link_libraries(dl)
 
 add_executable(hyperblog src/server/server.cpp)
 #add_executable(hyperblog test/test.cpp)
