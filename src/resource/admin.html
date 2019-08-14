@@ -82,8 +82,10 @@
 			<a href="" class="blog-tag" v-for="tag in tags">{{tag.tag_name}}</a>
             </div>
         </div>
-		<button type="button" class="am-btn am-btn-danger am-round" v-on:click="login()"  >登录</button>
-		<button type="button" class="am-btn am-btn-danger am-round" v-on:click="edit_blog(-1)"  >添加</button>
+		<button type="button" class="am-btn am-btn-danger am-round" v-on:click="login()" >登录</button>
+		<a href="./insert.html">
+		<button type="button" class="am-btn am-btn-danger am-round">添加</button>
+		</a>
     </div>
 </div>
 <!-- content end -->
