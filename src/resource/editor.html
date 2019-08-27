@@ -4,6 +4,8 @@
 <head>
     <title>editor</title>
     <meta charset="utf-8" />
+    <script src="./editor.md/examples/js/jquery.min.js"></script>
+    <script src="./editor.md/editormd.min.js"></script>
     <link rel="stylesheet" href="./editor.md/examples/css/style.css" />
     <link rel="stylesheet" href="./editor.md/css/editormd.css" />
     <link rel="stylesheet" href="assets/css/amazeui.min.css">
@@ -37,8 +39,6 @@
             <button id="submt" type="submit" class="am-btn am-btn-success am-round" onclick="submit()">提交</button>
         </div>
     </div>
-    <script src="./editor.md/examples/js/jquery.min.js"></script>
-    <script src="./editor.md/editormd.min.js"></script>
     <script type="text/javascript">
         var testEditor;
 
@@ -63,25 +63,25 @@
         }
 
         function submit() {
-			var time = Date.now();
+            var time = Date.now();
             var title = $("#tit").val();
             var tname = $("#tag").val();
             var content = testEditor.getMarkdown();
             var create_time = new Date(time);
-			
-			var tagid = tid(tname);
+
+            var tagid = tid(tname);
             var obj = { "title": title, "tag_id": tagid, "content": content, "create_time": create_time };
-			
-			var jsonStr = JSON.stringify(obj);
-			
+
+            var jsonStr = JSON.stringify(obj);
+
             $.ajax({
                 type: "post",
                 context: this,
-                url: "\blog",
+                url: "/blog",
                 data: jsonStr,
                 success: function (data, status) {
                     alert("增加文章成功");
-					
+
                 }
             });
         }
