@@ -62,7 +62,6 @@
         <article id="blog_view">
             <textarea>{{blog.content}}</textarea>
         </article>
-		<button type="button" v-show="blog.blog_id == -1" class="am-btn am-btn-success am-round" v-on:click="push()">提交</button>
         <button type="button" class="am-btn am-btn-success am-round" v-on:click="update_blog(blog.blog_id)">提交</button>
         <button type="button" class="am-btn am-btn-success am-round" v-on:click="back()">返回</button>
     </div>
@@ -83,7 +82,7 @@
             </div>
         </div>
 		<button type="button" class="am-btn am-btn-danger am-round" v-on:click="login()" >登录</button>
-		<a href="./insert.html">
+		<a href="./editor.html">
 		<button type="button" class="am-btn am-btn-danger am-round">添加</button>
 		</a>
     </div>

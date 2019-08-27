@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
      *******************************/
     server.Post("/blog", [&bt](const Request &req, Response &resp) {
 #ifdef __LOG__
-        fprintf(stdout, "权限认证失败\n");
+        //fprintf(stdout, "权限认证失败\n");
 #endif
         //获取request的body 解析成json
         Json::Reader reader;
@@ -223,10 +223,10 @@ int main(int argc, char *argv[]) {
         int err = reader.parse(req.body, jreq);
         if (!err || !isLogin(req.get_header_value("Cookie", 0))) {
 #ifdef __LOG__
-            fprintf(stderr, "解析请求失败 line: %d\n", __LINE__);
+            fprintf(stderr, "解析请求失败或没有权限 line: %d\n", __LINE__);
 #endif
             jresp["OK"] = false;
-            jresp["Reason"] = "输入的数据无法解析";
+            jresp["Reason"] = "输入的数据无法解析或没有权限";
             resp.set_content(fw.write(jresp), "application/json");
             resp.status = 400;
             return;

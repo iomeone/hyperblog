@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>editor</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="./editor.md/examples/css/style.css" />
+    <link rel="stylesheet" href="./editor.md/css/editormd.css" />
+    <link rel="stylesheet" href="assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <script src="assets/js/amazeui.min.js"></script>
+    <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="layout">
+        <!--标题  和  标签-->
+        <div class="am-g">
+            <textarea id="tit" name="标题" id="" cols="15" rows="1" class="" placeholder="标题"></textarea>
+            <textarea id="tag" name="标签" id="" cols="15" rows="1" class="" placeholder="标签"></textarea>
+        </div>
+
+        <h1></h1>
+        <!---编辑区域--->
+        <div id="test-editormd">
+            <textarea style="display:none;"></textarea>
+        </div>
+
+        <!--提交按钮  和返回-->
+        <div>
+            <a href="./admin.html">
+                <button id="home" type="button" class="am-btn am-btn-success am-round">返回</button>
+            </a>
+            <button id="submt" type="submit" class="am-btn am-btn-success am-round" onclick="submit()">提交</button>
+        </div>
+    </div>
+    <script src="./editor.md/examples/js/jquery.min.js"></script>
+    <script src="./editor.md/editormd.min.js"></script>
+    <script type="text/javascript">
+        var testEditor;
+
+        $(function () {
+            testEditor = editormd("test-editormd", {
+                width: "90%",
+                height: 640,
+                syncScrolling: "single",
+                path: "./editor.md/lib/"
+            });
+        });
+
+        var tagarr;
+
+        function tid(tag) {
+            for (t = 0; t < tagarr.length; ++t) {
+                if (tagarr[t] == tag) {
+                    return t;
+                }
+            }
+            return 1;
+        }
+
+        function submit() {
+			var time = Date.now();
+            var title = $("#tit").val();
+            var tname = $("#tag").val();
+            var content = testEditor.getMarkdown();
+            var create_time = new Date(time);
+			
+			var tagid = tid(tname);
+            var obj = { "title": title, "tag_id": tagid, "content": content, "create_time": create_time };
+			
+			var jsonStr = JSON.stringify(obj);
+			
+            $.ajax({
+                type: "post",
+                context: this,
+                url: "\blog",
+                data: jsonStr,
+                success: function (data, status) {
+                    alert("增加文章成功");
+					
+                }
+            });
+        }
+
+        function get_tags() {
+            $.ajax({
+                type: "get",
+                url: "/tag",
+                context: this,
+                success: function (data, status) {
+                    this.tagarr = data;
+                }
+            })
+        }
+
+        get_tags();
+    </script>
+</body>
+
+</html>
