@@ -5,8 +5,8 @@ TESTFLE=test/test.cpp
 SERVDEP=src/server/server.cpp src/server/db.hpp src/server/Properties.hpp src/server/httplib.h src/server/md5.hpp src/server/authentication.hpp
 SERVFLE=src/server/server.cpp
 
-SERVFLG=-std=c++11 -ljsoncpp -lmysqlclient -lpthread  -lcolib
-TESTFLG=-std=c++11  -lgtest -lgtest_main -lpthread -lmysqlclient -ljsoncpp -lcolib
+SERVFLG=-std=c++11 -ljsoncpp -lmysqlclient -lpthread  -lcolib -ldl
+TESTFLG=-std=c++11  -lgtest -lgtest_main -lpthread -lmysqlclient -ljsoncpp -lcolib -ldl
 G=-g
 
 log=-D__LOG__
@@ -18,7 +18,7 @@ cov=-fprofile-arcs  -ftest-coverage代码覆盖率测试
 all:servd testd
 
 servd:$(SERVDEP)
-	g++ -o servd $(SERVFLE) $(SERVFLG) $(log) #$(G)
+	g++ -o servd $(SERVFLE) $(SERVFLG) $(log)
 
 testd:$(TESTDEP)
 	g++ -o testd $(TESTFLE) $(TESTFLG)

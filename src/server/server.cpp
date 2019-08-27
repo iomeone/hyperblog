@@ -1,5 +1,8 @@
 #include <map>
 
+#define __DEBUG__
+#define __LOG__
+
 #include <signal.h>
 #include <sys/mman.h>
 
@@ -68,13 +71,13 @@ private:
 
 struct Lst {
     httplib::Server *s;
-    const char *ip;
+    std::string ip;
     int port;
 };
 
 void* CoListen(void *arg) {
     Lst* l = static_cast<Lst*>(arg);
-    l->s->listen(l->ip, l->port);
+    l->s->listen(l->ip.c_str(), l->port);
 }
 
 class CoPool : public httplib::TaskQueue {
@@ -590,7 +593,7 @@ int main(int argc, char *argv[]) {
 
     server.set_base_dir("src/resource/");
     Lst lst;
-    lst.ip = prop["servip"].c_str();
+    lst.ip = prop["servip"];
     lst.port = std::stoi(prop["servport"]);
     lst.s = &server;
 

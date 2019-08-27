@@ -1,9 +1,9 @@
 {
     "db": "blog",
     "ip": "127.0.0.1",
-    "user": "",
-    "passwd": "",
+    "user": "qz",
+    "passwd": "915531401",
     "dbport": "3306",
-    "servport" : "",
+    "servport" : "9155",
     "servip" : "0.0.0.0"
 }

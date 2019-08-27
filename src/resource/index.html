@@ -185,6 +185,7 @@
                         context: this,
                         success: function (data, status) {
                             // 此处得到的 blog.content 是 markdown 格式的数据
+                            this.blog = {};
                             this.blog = data;
                             // 把这个 markdown 格式的数据转成 html, 并显示在界面上
                             testEditormdView = editormd.markdownToHTML("blog_view", {

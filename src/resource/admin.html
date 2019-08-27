@@ -202,12 +202,6 @@
                 },
                 edit_blog(blog_id) {
                     this.blog = {};
-                    if (blog_id === -1) {
-                        this.blog.content = "";
-                        this.blog.tag_id = 1;
-                        this.blog.title = "";
-                        return;
-                    }
                     $.ajax({
                         type: "get",
                         url: "/blog/" + blog_id,
